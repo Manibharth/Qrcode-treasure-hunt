@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QR Treasure Hunt</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- ZXING (QR Scanner) must load before app.js -->
+  <script src="https://unpkg.com/@zxing/browser@latest"></script>
+
+  <!-- App JS -->
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <div class="brand">
+      <div class="compass">🧭</div>
+      <h1>QR Treasure Hunt</h1>
+    </div>
+    <div class="row">
+      <button id="scanBtn" class="btn gold">📷 Scan QR</button>
+      <button id="stopBtn" class="btn">⏹️ Stop Camera</button>
+      <button id="shareBtn" class="btn mint">🤝 Ask a Friend</button>
+    </div>
+  </header>
+
+  <!-- ===================== CONTENT WRAPPER ===================== -->
+  <div class="wrap">
+    <!-- ============ LEFT SIDEBAR (Profile, Controls) ============ -->
+    <aside>
+      <div class="card card-margin-bottom">
+        <div class="section-title">Player</div>
+        <label class="tiny">Display Name</label>
+        <input id="playerName" type="text" placeholder="Enter your name" />
+        <div class="section-title choose-avatar">Choose Avatar</div>
+        <div id="avatars" class="avatar-picker"></div>
+        <div class="row margin-top-12">
+          <button id="saveProfile" class="btn green">💾 Save Profile</button>
+          <button id="resetRun" class="btn red">🔄 Reset Run</button>
+        </div>
+      </div>
+
+      <div class="card margin-bottom-12">
+        <div class="section-title">Progress</div>
+        <div class="map"><div id="progressFill" class="fill"></div></div>
+        <div class="meta" id="progressMeta">
+          <span class="pill">You are on QR <b id="posNow">0</b>/<b id="posMax">10</b></span>
+          <span class="pill">Score: <b id="scoreNow">0</b></span>
+          <span class="pill">Streak: <b id="streakNow">0</b></span>
+          <span class="pill">Time left: <b id="timeLeft">—</b></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Hints</div>
+        <div class="row">
+          <button id="hint5050" class="btn">🧪 50:50</button>
+          <button id="hintClue" class="btn">🧩 Clue</button>
+          <button id="hintFirst" class="btn">🔤 First Letter</button>
+        </div>
+        <div class="tiny hint-cost">Each hint costs <b>-1</b> mark (Base 4). No hints → +1 bonus.</div>
+
+        <div class="section-title gameplay-title">Gameplay</div>
+        <div class="row">
+          <button id="skipBtn" class="btn red">⏭️ Skip (-2)</button>
+          <button id="retryBtn" class="btn">🔁 Retry (reduced)</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================== MAIN PANE ===================== -->
+    <main>
+      <!-- Camera preview -->
+      <div id="videoWrap">
+        <video id="preview" muted></video>
+        <div id="scanHint">Allow camera permission • Point at a QR • The text (or JSON question) appears below automatically</div>
+      </div>
+
+      <!-- Question card -->
+      <div id="qCard" class="card hidden">
+        <div class="section-title">Question</div>
+        <div id="qText" class="q"></div>
+
+        <img id="clueImage" class="clueImg hidden" alt="" />
+
+        <div id="mcqWrap" class="options hidden"></div>
+
+        <div id="typedWrap" class="hidden">
+          <div class="answerRow">
+            <input id="typedAnswer" type="text" placeholder="Type your answer..." />
+            <button id="submitTyped" class="btn green">✅ Submit</button>
+          </div>
+        </div>
+
+        <div class="meta">
+          <span class="pill">Base: 4</span>
+          <span class="pill">Hints used: <b id="hintsUsed">0</b>/3</span>
+          <span class="pill hidden-badge" id="hiddenBadge">💎 Hidden Treasure (double!)</span>
+          <span class="pill hidden" id="riddleNext"></span>
+        </div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="card">
+        <div class="section-title">Leaderboard (Local)</div>
+        <table id="lb">
+          <thead>
+            <tr>
+              <th>#</th><th>Player</th><th>Score</th><th>Best Streak</th><th>Achievements</th><th>When</th>
+            </tr>
+          </thead>
+          <tbody id="lbBody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+</body>
+</html>
